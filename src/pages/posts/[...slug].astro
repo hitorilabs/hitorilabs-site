@@ -1,0 +1,145 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { getCollection, getEntry } from "astro:content";
+
+export async function getStaticPaths() {
+    const blogEntries = await getCollection("blog");
+    return blogEntries.map((entry) => ({
+        params: { slug: entry.slug },
+        props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const { Content, remarkPluginFrontmatter } = await entry.render();
+const socialImageURL = new URL(`/open-graph/${entry.slug}.png`, Astro.site);
+
+let formatDate = (date: Date): string => {
+    return date.toISOString().split("T")[0];
+};
+const organization = await getEntry("organization", "hitorilabs");
+const logoURL = new URL(organization.data.logoImage.src, Astro.site);
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const author_schema = {
+    "@type": "Organization",
+    // "@id": organization.id,
+    "name": organization.data.name,
+    "url": "https://hitorilabs.com/",
+    "image": {
+        "@type": "ImageObject",
+        // "@id": logoURL,
+        "url": logoURL,
+        "width": organization.data.logoImage.width,
+        "height": organization.data.logoImage.height,
+    }
+}
+
+// const organization_schema = {
+//     "@type": "Organization",
+//     // "@id": "https://hitorilabs.com",
+//     "name": "hitorilabs",
+//     "logo": {
+//         "@type": "ImageObject",
+//         // "@id": logoURL,
+//         "url": logoURL,
+//         "width": organization.data.logoImage.width,
+//         "height": organization.data.logoImage.height,
+//     }
+// }
+
+let blog_schema = {
+    "@context": "https://schema.org/",
+    "@type": "BlogPosting",
+    // "@id": canonicalURL,
+    // "mainEntityOfPage": canonicalURL,
+    "headline": entry.data.seo_title,
+    // "name": entry.data.seo_title,
+    "description": entry.data.description,
+    "datePublished": entry.data.publishDate,
+    "dateModified": new Date(remarkPluginFrontmatter.lastModified),
+    "author": author_schema,
+    "image": {
+        "@type": "ImageObject",
+        // "@id": socialImageURL,
+        "url": socialImageURL,
+        "width": entry.data.featuredImage.width,
+        "height": entry.data.featuredImage.height,
+    },
+    "url":  canonicalURL,
+    // "isPartOf": {
+    //     "@type" : "Blog",
+    //      "@id": "https://hitorilabs.com/posts/",
+    //      "name": "hitorilabs blog",
+    //      "publisher": organization_schema,
+    //  },
+    "wordCount": remarkPluginFrontmatter.words,
+    "keywords": entry.data.tags,
+}
+// should be 1024 x 512 (2:1) for large summary card
+// 1024 x 1024 (1:1) for regular summary card
+---
+
+<Layout defaultContainerClasses="container mx-auto max-w-screen-sm px-4 mt-4">
+    <Fragment slot="seo">
+        <meta property="og:title" content={entry.data.seo_title} />
+        <meta property="og:description" content={entry.data.description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content={socialImageURL} />
+        <meta property="article:section" content="posts" />
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify(blog_schema)}
+            is:inline
+        >
+        </script>
+        <meta
+            property="article:published_time"
+            content={entry.data.publishDate.toISOString()}
+        />
+        <meta
+            property="article:modified_time"
+            content={formatDate(new Date(remarkPluginFrontmatter.lastModified))}
+        />
+        <meta property="twitter:title" content={entry.data.title} />
+        <meta name="description" content={entry.data.description} />
+        <meta property="twitter:card" content="summary_large_image" />
+    </Fragment>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
+        integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ"
+        crossorigin="anonymous"
+        slot="plugins"
+    />
+
+    <main class="font-mono container blog-content">
+        <div class="flex gap-8 items-end">
+            <h1 class="text-xl font-black grow">{entry.data.title}</h1>
+            <div class="shrink-0 pb-4">
+                <div class="flex justify-between gap-4">
+                    <span>reading time:</span>
+                    <span>{remarkPluginFrontmatter.time.toFixed(2)} mins</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                    <span>published:</span>
+                    <span>{formatDate(entry.data.publishDate)}</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                    <span>updated:</span>
+                    <span
+                        >{
+                            formatDate(
+                                new Date(remarkPluginFrontmatter.lastModified),
+                            )
+                        }</span
+                    >
+                </div>
+            </div>
+        </div>
+        <p>{entry.data.description}</p>
+        <div class="blog-inner">
+        <Content />
+        </div>
+    </main>
+    <hr />
+</Layout>

@@ -1,0 +1,33 @@
+{
+  "name": "",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.8.0",
+    "@astrojs/mdx": "^3.1.2",
+    "@astrojs/rss": "^4.0.7",
+    "@astrojs/sitemap": "^3.1.6",
+    "@astrojs/tailwind": "^5.1.0",
+    "astro": "^4.11.5",
+    "mdast-util-to-string": "^4.0.0",
+    "reading-time": "^1.5.0",
+    "rehype-katex": "^7.0.0",
+    "remark-math": "^6.0.0",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.3"
+  },
+  "packageManager": "pnpm@9.5.0+sha1.8c155dc114e1689d18937974f6571e0ceee66f1d",
+  "devDependencies": {
+    "prettier": "^3.3.2",
+    "prettier-plugin-astro": "^0.14.0",
+    "satori": "^0.10.14",
+    "sharp": "^0.33.4"
+  }
+}

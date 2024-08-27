@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+    .link {
+        @apply font-mono text-[#0000EE] underline hover:bg-[#fef9c3];
+    }
+
+    .nav-link {
+        @apply font-mono text-[#0000EE] underline hover:bg-[#fef9c3];
+    }
+
+    .nav-link:before {
+        display: inline-block;
+        content: "[";
+    }
+
+    .nav-link:after {
+        display: inline-block;
+        content: "]";
+    }
+
+    hr.header {
+        background-color: black;
+        border-color: black;
+        @apply -mt-1;
+        @apply mb-2;
+    }
+}
+
+@layer base {
+
+    @font-face {
+        font-family: 'JetBrains Mono';
+        src: url('/fonts/JetBrainsMono[wght].ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+    }
+    
+    @font-face {
+        font-family: 'JetBrains Mono';
+        src: url('/fonts/JetBrainsMono-Italic[wght].ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: italic;
+    }
+
+    html {
+        font-family: "JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace";
+    }
+
+    p {
+        @apply mb-2;
+    }
+
+    main.content { 
+        h1, h2, h3, h4, h5, h6 {
+            margin: 16px 0 4px 0;
+            @apply font-bold
+        }
+
+        /* top-level */
+        ul, ol {
+            display: block;
+            list-style-type: none;
+            margin-block-start: 0.1em;
+            margin-block-end: 0.6em;
+            padding-inline-start: 2ch;
+        }
+
+        ul:last-of-type {
+            list-style-position: outside;
+        }
+
+        li {
+            @apply list-disc;
+            display: list-item;
+            text-align: match-parent;
+        }
+
+        ::marker {
+          unicode-bidi: isolate;
+          font-variant-numeric: tabular-nums;
+          text-transform: none;
+        }
+    }
+
+    main.blog-content > div.blog-inner {
+        h1, h2, h3, h4, h5, h6 {
+            @apply mb-4 border-b border-black
+        }
+    }
+
+    main.blog-content {
+        h1, h2, h3, h4, h5, h6 {
+            margin: 16px 0 4px 0;
+            @apply font-bold
+        }
+
+        p {
+            @apply mb-4
+        }
+
+        li {
+            @apply list-disc;
+            display: list-item;
+            text-align: match-parent;
+        }
+
+        ::marker {
+          unicode-bidi: isolate;
+          font-variant-numeric: tabular-nums;
+          text-transform: none;
+        }
+        a {
+            @apply link;
+        }
+
+        img {
+            @apply mb-4
+        }
+
+        /* top-level */
+        ul, ol {
+            display: block;
+            list-style-type: none;
+            margin-block-start: 0.1em;
+            margin-block-end: 0.6em;
+            padding-inline-start: 2ch;
+        }
+
+        blockquote { 
+            ul {
+                padding: 0;
+                li {
+                    list-style: none;
+                }
+            }
+        }
+
+        blockquote {
+          background: #f9f9f9;
+          margin: 0.5em 0;
+          padding: 0.5em 10px;
+          font-style: italic;
+        }
+
+        blockquote p {
+          display: inline;
+        }
+    }
+
+
+    span.ellipsis-suffix:after {
+        content:" . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+    }
+
+}

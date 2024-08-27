@@ -1,0 +1,48 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+let formatDate = (date: Date): string => {
+    return date.toISOString().split("T")[0];
+};
+
+const blogEntries = (await getCollection("blog")).sort(
+    (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime(),
+);
+---
+
+<Layout>
+    <header slot="header">
+        <div class="content font-mono">
+            <div class="flex gap-1 items-end mt-4 text-md">
+                <h1 class="font-black">all posts</h1>
+            </div>
+            <p>long form thoughts</p>
+            <a href="/rss.xml" class="link">RSS feed</a>
+            <hr class="mt-2" />
+        </div>
+    </header>
+    <main class="font-mono mt-2">
+        <ul>
+            {
+                blogEntries.map((entry) => (
+                    <li class="hover:bg-[#fef9c3] hover:cursor-pointer">
+                        <a href={`/posts/${entry.slug}/`}>
+                            <div class="flex justify-between overflow-hidden whitespace-nowrap">
+                                <span class="ellipsis-suffix overflow-hidden whitespace-nowrap">
+                                    {formatDate(entry.data.publishDate)}
+                                </span>
+                                <span class="flex-shrink-0 overflow-hidden whitespace-nowrap pl-2">
+                                    {entry.data.title}
+                                </span>
+                            </div>
+                            <span class="flex mb-1">
+                                {entry.data.description}
+                            </span>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </main>
+</Layout>

@@ -1,0 +1,90 @@
+---
+import Navigation from "@components/Navigation.astro";
+import "@styles/main.css";
+import { z } from "astro:content";
+
+const {
+	title = "hitorilabs",
+	defaultContainerClasses = "container mx-auto max-w-screen-sm px-4 mt-4",
+} = Astro.props;
+
+const socialLink = z.object({
+	id: z.string(),
+	url: z.string().url(),
+});
+
+const socials = [
+	{ id: "github", url: "https://github.com/hitorilabs" },
+	{ id: "twitter", url: "https://www.x.com/hitorilabs" },
+	{ id: "twitch", url: "https://www.twitch.tv/hitorilabs" },
+].map((o) => socialLink.parse(o));
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const siteName = "hitorilabs";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<slot name="seo" />
+		<link rel="canonical" href={canonicalURL} />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={siteName} />
+		<meta property="twitter:domain" content={Astro.url.hostname} />
+		<link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+		<link
+			rel="preload"
+			href="/fonts/JetBrainsMono[wght].ttf"
+			as="font"
+			crossorigin
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="/icons/apple-touch-icon-180x180.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="/icons/favicon-32x32.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+			href="/icons/favicon-16x16.png"
+		/>
+		<slot name="plugins" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<title>{title}</title>
+	</head>
+	<body class="bg-[#f1f1f1]">
+		<header class={defaultContainerClasses}>
+			<Navigation />
+			<slot name="header" />
+		</header>
+
+		<main class={defaultContainerClasses}>
+			<slot />
+		</main>
+
+		<footer class={defaultContainerClasses}>
+			<div class="flex gap-1 bg-neutral-200">
+				{
+					socials.map((o) => {
+						let attrs = {
+							href: o.url,
+							class: "nav-link",
+						};
+						return <a {...attrs}>{o.id}</a>;
+					})
+				}
+			</div>
+		</footer>
+	</body>
+</html>

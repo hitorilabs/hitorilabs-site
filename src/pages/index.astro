@@ -1,0 +1,119 @@
+---
+import Layout from "@layouts/Layout.astro";
+
+const socialImageURL = new URL("/icons/android-chrome-512x512.png", Astro.url);
+
+let schema = {
+	"@context": "https://schema.org/",
+	"@type": "ImageObject",
+	contentUrl: socialImageURL,
+	creditText: "hitorilabs",
+	creator: {
+		"@type": "Organization",
+		name: "hitorilabs",
+	},
+	copyrightNotice: "hitorilabs",
+};
+const description = "Independent research group working on software for AI";
+
+import { getCollection } from "astro:content";
+
+let formatDate = (date: Date): string => {
+	return date.toISOString().split("T")[0];
+};
+
+const blogEntries = await getCollection("blog");
+---
+
+<Layout title="hitorilabs">
+	<Fragment slot="seo">
+		<script
+			type="application/ld+json"
+			set:html={JSON.stringify(schema)}
+			is:inline
+		/>
+		<meta name="description" content={description} />
+		<meta property="twitter:url" content={Astro.url} />
+		<meta property="twitter:title" content="hitorilabs | home" />
+		<meta property="twitter:card" content="summary" />
+		<meta property="og:image" content={socialImageURL} />
+	</Fragment>
+	<div class="container" slot="header">
+		<div class="font-mono flex gap-1 items-end mt-4 text-md">
+			<h1 class="font-black">hitorilabs</h1> |
+			<span> independent ml research </span>
+		</div>
+		<div class="font-mono mt-2">
+			<p class="font-mono">
+				Independent research group working on software for AI
+			</p>
+		</div>
+	</div>
+
+	<main aria-role="main" class="container">
+		<h2 id="projects" class="font-bold mt-3 mb-1">purpose</h2>
+		<hr class="header" />
+		<div>
+			<p>Work in public. No ads. No trackers. No sales funnel.</p>
+		</div>
+		<h2 id="projects" class="font-bold mt-3 mb-1">who am i?</h2>
+		<hr class="header" />
+		<div>
+			<p>anime pfp and pseudonymous identity</p>
+			<p>
+				A programmer based in Toronto. The singularity is already here, but I
+				might have a chance at being useful if I focus on AI.
+			</p>
+			<p>
+				DM <a href="https://x.com/hitorilabs" class="link">@hitorilabs</a> on x dot
+				com the everything app
+			</p>
+		</div>
+		<h2 id="projects" class="font-bold mt-3 mb-1">ongoing projects</h2>
+		<hr class="header" />
+		<ul class="list-disc list-inside">
+			<li>
+				homelab build - <a
+					href="https://github.com/hitorilabs/navi"
+					class="link">hitorilabs/navi</a
+				>
+			</li>
+			<li>
+				tour of deep learning basics - <a
+					href="https://github.com/hitorilabs/papers"
+					class="link">hitorilabs/navi</a
+				>
+			</li>
+		</ul>
+
+		<h2 id="recent-posts" class="font-bold mt-3 mb-1">recent posts</h2>
+		<hr class="header" />
+		<div>
+			<ul>
+				{
+					blogEntries
+						.sort(
+							(a, b) =>
+								b.data.publishDate.getTime() - a.data.publishDate.getTime(),
+						)
+						.slice(0, 5)
+						//.filter(entry => entry.draft)
+						.map((entry) => (
+							<li class="hover:bg-[#fef9c3] hover:cursor-pointer">
+								<a href={`/posts/${entry.slug}/`}>
+									<div class="flex justify-between overflow-hidden whitespace-nowrap">
+										<span class="ellipsis-suffix overflow-hidden whitespace-nowrap">
+											{formatDate(entry.data.publishDate)}
+										</span>
+										<span class="flex-shrink-0 overflow-hidden whitespace-nowrap pl-2">
+											{entry.data.title}
+										</span>
+									</div>
+								</a>
+							</li>
+						))
+				}
+			</ul>
+		</div>
+	</main>
+</Layout>

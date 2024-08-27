@@ -1,0 +1,19 @@
+---
+const paths = [
+    { id: "home", path: "/" },
+    { id: "posts", path: "/posts" },
+];
+---
+
+<nav class="flex gap-1 bg-neutral-200">
+    {
+        paths.map((p) => {
+            let attrs = {
+                href: p.path,
+                title: `hitorilabs | ${p.id}`,
+                class: "nav-link font-semibold",
+            };
+            return <a {...attrs}>{p.id}</a>;
+        })
+    }
+</nav>
